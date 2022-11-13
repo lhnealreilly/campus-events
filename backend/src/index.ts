@@ -56,11 +56,16 @@ app.use(express.json());
  */
 app.get('/recommended/:id', async (req: Request, res: Response) => {
 	const user = req.params.id;
+
+	const hardcodedData = ['campuspulse-i33-e8405360', 'campuspulse-i33-e8388430'];
+
 	//Get Rankings
 	const rankings = await getPersonalizedRankings({
-		inputList: [],
+		inputList: hardcodedData,
 		userId: user,
 	});
+
+	console.log(rankings);
 
 	//Check that the return information is correct
 	if (!rankings?.personalizedRanking) {
@@ -82,7 +87,7 @@ app.get('/recommended/:id', async (req: Request, res: Response) => {
 	const { events } = result.data;
 	const output = rankings?.personalizedRanking.map(item => {
 		return events.find((evt: Event) => {
-			evt.relatedIDs.includes(item.itemId!);
+			return evt.relatedIDs.includes(item.itemId!);
 		});
 	});
 
