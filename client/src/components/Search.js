@@ -16,7 +16,7 @@ export default function SearchBar({ setSearchQuery }) {
         placeholder="Search..."
         size="small"
       />
-      <IconButton type="submit" aria-label="search">
+      <IconButton aria-label="search">
         <Search style={{ fill: "#600000" }} />
       </IconButton>
     </form>

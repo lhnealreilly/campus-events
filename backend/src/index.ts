@@ -12,6 +12,12 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env['PORT'];
 
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "http://localhost:8080"); // update to match the domain you will make the request from
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+  });
+
 // Setup database connection
 // const databaseConnection = new DatabaseConnection();
 const db = 'events';
@@ -57,11 +63,14 @@ app.use(express.json());
 app.get('/recommended/:id', async (req: Request, res: Response) => {
 	const user = req.params.id;
 
-	const hardcodedData = ['campuspulse-i33-e8405360', 'campuspulse-i33-e8388430'];
+	const eventQueryData = await axios.get('http://localhost:4069');
+	
+	let upcomingEvents = eventQueryData.data.events.filter((e: Event) => new Date(e.startTime) > new Date()).map((e: Event) => e.relatedIDs[0]);
+
 
 	//Get Rankings
 	const rankings = await getPersonalizedRankings({
-		inputList: hardcodedData,
+		inputList: upcomingEvents,
 		userId: user,
 	});
 
@@ -82,9 +91,7 @@ app.get('/recommended/:id', async (req: Request, res: Response) => {
 	// const output = rankings?.personalizedRanking.map(rankId => {
 	// 	return (result as unknown as Array<any>).find(item => item._id === rankId.itemId);
 	// });
-
-	const result = await axios.get('http://localhost:4069');
-	const { events } = result.data;
+	const { events } = eventQueryData.data;
 	const output = rankings?.personalizedRanking.map(item => {
 		return events.find((evt: Event) => {
 			return evt.relatedIDs.includes(item.itemId!);
@@ -93,14 +100,22 @@ app.get('/recommended/:id', async (req: Request, res: Response) => {
 
 	//Find all informa
 	//Match scores to data
-	res.status(200).json(output).send();
+	res.status(200).send(output);
 });
+
+app.get('/query/:term', async (req: Request, res: Response) => {
+	const result = await axios.get('http://localhost:4069');
+	const { events } = result.data;
+	const output = events.filter((e : Event) => e.eventName.toLowerCase().includes(req.params.term.toLowerCase()) || e.description.toLowerCase().includes(req.params.term.toLowerCase()))
+	res.status(200).send(output);
+});
+
 
 app.get('/recommended', async (req: Request, res: Response) => {
 	const result = await axios.get('http://localhost:4069');
 	const { events } = result.data;
 	const output = events.slice(0, 15);
-	res.status(200).json(output).send();
+	res.status(200).send(output);
 });
 
 // app.post('/events', async (req: Request, res: Response) => {

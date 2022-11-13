@@ -5,6 +5,7 @@ import umassDefault from "../images/umassDefault.jpg"
 import EventDialog from "./EventDialog";
 import "./EventDialog.css"
 
+
 export default function EventCard({event}) {
   const [elevation, setElevation] = useState(3);
   const [open, setOpen] = useState(false);

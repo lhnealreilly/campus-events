@@ -7,6 +7,8 @@ import "./App.css";
 import { Typography } from "@mui/material";
 import logo from "../images/CampusEvents_logo.png";
 
+const userID = 1;
+
 const eventTest = () => {
   let events = [];
 
@@ -28,33 +30,41 @@ const eventTest = () => {
 export default function App() {
   const [events, setEvents] = useState([]);
 
-  useEffect(() => {
-    async function fetchEvents() {
-      let res = await fetch("https://localhost:3000/recommended");
-      if (res.ok) {
-        setEvents(await res.json());
-      }
+  async function fetchEvents() {
+    let res = await fetch(`http://localhost:3000/recommended/${userID}`);
+    if (res.ok) {
+      let json = await res.json();
+      console.log(json);
+      let convertedJson = json.map(obj => ({...obj, image: obj.url, description: obj.description, title: obj.eventName, organization: obj.organizationName, location: (obj.location.name || ""), date: (new Date(obj.startTime)).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), time: (new Date(obj.startTime)).toLocaleTimeString('en-US').replace(/(.*)\D\d+/, '$1')}))
+      setEvents(convertedJson);
     }
+  }
+
+  useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [])
+  
 
   async function setSearchQuery(query) {
-    let res = await fetch(`https://localhost:3000/query/${query}`);
+    if(query.length == 0){fetchEvents()}
+    let res = await fetch(`http://localhost:3000/query/${query}`);
     if (res.ok) {
-      setEvents(await res.json());
+      let json = await res.json();
+      let convertedJson = json.map(obj => ({image: obj.url, description: obj.description, title: obj.eventName, organization: obj.organizationName, location: (obj.location.name || ""), date: (new Date(obj.startTime)).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), time: (new Date(obj.startTime)).toLocaleTimeString('en-US').replace(/(.*)\D\d+/, '$1')}))
+      setEvents(convertedJson);
     }
   }
 
   return (
     <div>
       <div className="header">
-        <Search setSearchQuery={setSearchQuery}></Search>
         <img id="logo" src={logo}></img>
+        <Search setSearchQuery={setSearchQuery}></Search>
       </div>
       <div className="eventContainer">
-        <Typography variant="h4">Recommended</Typography>
+        <Typography variant="h4">Recommended Events</Typography>
         <EventList
-          events={events.length == 0 ? eventTest() : events}
+          events={events.length == 0 ? [] : events}
         ></EventList>
       </div>
     </div>
