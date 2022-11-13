@@ -14,7 +14,7 @@ const databaseConnection = new DatabaseConnection();
 const db = 'events';
 const collection = 'test';
 
-/** Interface representing a bug event */
+/** Interface representing an event */
 interface Event {
 	//Required
 	_id: any;
