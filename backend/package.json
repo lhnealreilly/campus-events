@@ -13,6 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-personalize-runtime": "^3.209.0",
+    "axios": "^1.1.3",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongodb": "^4.11.0",
     "morgan": "^1.10.0",

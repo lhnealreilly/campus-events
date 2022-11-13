@@ -8,6 +8,7 @@ const client = new AWS.PersonalizeRuntime({ region: REGION });
 async function getPersonalizedRankings(params: { inputList: string[]; userId: string }) {
 	try {
 		const data = await client.getPersonalizedRanking({ campaignArn, ...params });
+		
 		// process data.
 		const { recommendationId, personalizedRanking } = data;
 		return { recommendationId, personalizedRanking };
