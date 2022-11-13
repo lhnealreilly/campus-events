@@ -40,7 +40,9 @@ class Institution implements EventfulInstitution, OrganizedInstitution {
   async getEvents(): Promise<Event[]> {
     let events = (await Promise.all(this.dataSources.map(s => {
       if (!('getEvents' in s)) return [];
-      return (s as EventsSource).getEvents();
+      let lookback = new Date();
+      lookback.setMonth(new Date().getMonth() - 3);
+      return (s as EventsSource).getEvents(lookback);
     }))).flat();
     return events;
   }
@@ -72,17 +74,21 @@ app.get('/learn_data', async (req: Request, res: Response) => {
     let realData = {
       ITEM_ID: event.relatedIDs[0],
       CREATION_TIMESTAMP: event.startTime.getTime(),
+      CATEGORIES: event.categoryNames.join('|'),
       DESCRIPTION: event.description,
     }
 
     let eventOrg = orgs.filter((o) => o.name === event.organizationName)[0];
     if (eventOrg != undefined) {
       Object.assign(realData, {
-        DESCRIPTION: `${event.description}\n${event.categoryNames.join(', ')}\n${eventOrg.summary}\n${eventOrg.categoryNames.join(', ')}`
+        CATEGORIES: [event.categoryNames, eventOrg.categoryNames].flat().join("|"),
+        DESCRIPTION: `${event.eventName}\n${event.description}\n${eventOrg.name}\n${eventOrg.summary}`,
       });
     } else {
       console.warn(`Couldn't find org (${event.organizationName}) for ${event.eventName}`);
     }
+
+    realData.DESCRIPTION = realData.DESCRIPTION.replaceAll('\r', '\n').replaceAll('\n', ' ');
     return realData;
   });
   res.status(200).attachment('learning_data.csv').send(await parseAsync(mapped));

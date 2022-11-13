@@ -4,7 +4,7 @@
       "outDir": "dist",
       "target": "es2019",
       "lib": [
-        "es2019"
+        "es2021"
       ],
       "module": "CommonJS",
       "esModuleInterop": true,
