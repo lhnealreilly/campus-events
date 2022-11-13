@@ -1,0 +1,8 @@
+
+.EventList{
+    grid-template-columns: repeat(auto-fill, 300px);
+    gap: 15px;
+    align-items: center;
+    justify-items: center;
+    display: grid;
+}
