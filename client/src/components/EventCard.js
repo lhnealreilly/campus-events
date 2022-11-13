@@ -1,5 +1,5 @@
 import {Card, CardMedia, CardContent, Typography, Box} from "@mui/material";
-import {CalendarMonth, Place} from "@mui/icons-material";
+import {CalendarMonth, Place, Group} from "@mui/icons-material";
 import React, {useState} from 'react'
 import umassDefault from "../images/umassDefault.jpg"
 import EventDialog from "./EventDialog";
@@ -40,7 +40,6 @@ export default function EventCard({event}) {
         left: 0,
         width: '100%',
         color: 'white',
-        padding: '10px',
       }}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" color={"white"}>
@@ -57,7 +56,13 @@ export default function EventCard({event}) {
           <Typography variant="body2" color="white" marginTop="auto" paddingLeft={.5}>
             {event.location}
           </Typography>
-        </div> 
+        </div>
+        <div style={{display: "flex", marginTop: 5}}>
+          <Group style={{fill: "white"}}></Group> 
+          <Typography variant="body2" color="white" marginTop="auto" paddingLeft={.5}>
+            {event.organization}
+          </Typography>
+        </div>  
       </CardContent>
       </Box>
       </Box>
