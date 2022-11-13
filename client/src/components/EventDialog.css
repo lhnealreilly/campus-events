@@ -1,21 +1,5 @@
 .EventDialog{
     width: 100%;
-    animation: append-animate .2s linear;
-}
-
-.info{
-    padding: 10px;
-}
-
-@keyframes append-animate {
-	from {
-		transform: translateY(100%);
-		opacity: 0;
-	}
-	to {
-		transform: translateY(0%);
-		opacity: 1;	
-	}
 }
 
 .EventDialog img{
@@ -24,6 +8,13 @@
 }
 
 .info{
-    width: 100%;
+    padding: 10px;
     height: 600px;
+}
+
+.details{
+    border-radius: 3px;
+    background-color: lightgray;
+    margin: 10px;
+    padding: 10px;
 }
