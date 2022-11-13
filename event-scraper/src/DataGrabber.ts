@@ -15,6 +15,7 @@ export interface Event {
     startTime: Date;
     endTime: Date;
     description: string;
+    image?: URL;
 }
 
 export interface Organization {
@@ -46,7 +47,7 @@ export class CampusPulseSource implements EventsSource, OrganizationSource {
     }
 
     async getEvents(after: Date = new Date()): Promise<Event[]> {
-        let _resp = await axios.get(`${this.baseUrl}/engage/api/discovery/event/search?endsAfter=${encodeURIComponent(after.toISOString())}&orderByField=endsOn&orderByDirection=ascending&status=Approved&take=300&query=`);
+        let _resp = await axios.get(`${this.baseUrl}/engage/api/discovery/event/search?endsAfter=${encodeURIComponent(after.toISOString())}&orderByField=endsOn&orderByDirection=ascending&status=Approved&take=900&query=`);
         let j = await _resp.data;
 
         let events: Event[] = j.value.map((element: any) => {
@@ -60,6 +61,7 @@ export class CampusPulseSource implements EventsSource, OrganizationSource {
                 endTime: new Date(element.endsOn),
                 // TODO clean this better -- still has NBSPs and such
                 description: stripTags(element.description),
+                url: `https://se-images.campuslabs.com/clink/images/${element.imagePath || element.organizationProfilePicture}`
             } as Event;
         });
 
