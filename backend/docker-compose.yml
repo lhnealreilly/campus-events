@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  app:
+    image: event-backend:latest
+    build: "."
+    container_name: event-backend
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    container_name: eventdb
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./data:/data/db"
+    env_file:
+      - .env
